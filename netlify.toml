@@ -12,10 +12,39 @@
   
   # متغيرات قاعدة البيانات
   DATABASE_URL = "postgresql://neondb_owner:npg_RjPm5AzCSe3X@ep-blue-bread-af97x8n0-pooler.c-2.us-west-2.aws.neon.tech/neondb?sslmode=require&channel_binding=require"
+  
+  # JWT Secrets
+  JWT_ACCESS_SECRET = "xoOJpqGoJwriVTQtNE0hyR79OGncbx4gmbxrr1Iu9ztMdvzH4Am8qe032NlLUSgf"
+  JWT_REFRESH_SECRET = "BeESfcZmlN9rwkT2Ill5QPBHKyp8hRYp09kl2Ag8yaiE8Pr4zuqZhuoHrXZXJKCc"
+  
+  # Frontend URL
+  FRONTEND_URL = "https://globalpromonetwork.netlify.app"
+  
+  # Admin Configuration
+  ADMIN_EMAIL = "1sanadsa1997@gmil.com"
+  ADMIN_PASSWORD = "PromoHive@Admin2025!"
+  
+  # Platform Settings
+  PLATFORM_NAME = "PromoHive"
+  PLATFORM_URL = "https://globalpromonetwork.netlify.app"
+  
+  # CORS
+  CORS_ORIGIN = "https://globalpromonetwork.netlify.app"
+  
+  # Environment
+  NODE_ENV = "production"
 
 # إعدادات Netlify Functions
 [functions]
   directory = "netlify/functions"
+  node_bundler = "esbuild"
+
+# إعادة التوجيه للاختبار
+[[redirects]]
+  from = "/test-db"
+  to = "/.netlify/functions/test-db"
+  status = 200
+  force = true
 
 # إعادة التوجيه للـ API أولاً (أولوية عالية)
 [[redirects]]
