@@ -46,6 +46,8 @@ export default defineConfig({
       ".manusvm.computer",
       "localhost",
       "127.0.0.1",
+      "globalpromonetwork.netlify.app", // أضفت دومينك الجديد
+      "www.globalpromonetwork.netlify.app", // أضفت دومينك الجديد
     ],
     fs: {
       strict: true,
