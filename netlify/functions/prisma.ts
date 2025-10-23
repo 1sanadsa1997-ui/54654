@@ -7,6 +7,19 @@ const prisma = new PrismaClient({
       url: process.env.DATABASE_URL,
     },
   },
+  log: ['error', 'warn'],
 });
+
+// Handle graceful shutdown
+const cleanup = async () => {
+  await prisma.$disconnect();
+};
+
+// Register cleanup on process exit
+if (typeof process !== 'undefined') {
+  process.on('SIGINT', cleanup);
+  process.on('SIGTERM', cleanup);
+  process.on('beforeExit', cleanup);
+}
 
 export default prisma;
