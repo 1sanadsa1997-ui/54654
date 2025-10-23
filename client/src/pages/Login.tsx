@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { useNavigate, Link } from 'wouter';
+import { useLocation, Link } from 'wouter';
 import { useAuth } from '@/hooks/useAuth';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -8,7 +8,7 @@ import { toast } from 'sonner';
 import api from '@/lib/api';
 
 export default function Login() {
-  const [, navigate] = useNavigate();
+  const [, navigate] = useLocation();
   const { login, refetch } = useAuth();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');

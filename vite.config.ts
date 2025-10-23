@@ -26,7 +26,7 @@ export default defineConfig({
     emptyOutDir: true,
     // إعدادات إضافية للنشر
     sourcemap: false,
-    minify: 'terser',
+    minify: 'esbuild', // استخدام esbuild بدلاً من terser
     rollupOptions: {
       output: {
         manualChunks: {
