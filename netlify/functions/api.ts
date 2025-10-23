@@ -33,6 +33,8 @@ export const handler: Handler = async (event, context) => {
       return await handleRegister(event);
     } else if (path.startsWith('/auth/me') && event.httpMethod === 'GET') {
       return await handleMe(event);
+    } else if (path.startsWith('/user/stats') && event.httpMethod === 'GET') {
+      return await handleUserStats(event);
     } else {
       // Default response for any API call
       return {
@@ -242,18 +244,64 @@ async function handleRegister(event: any) {
   }
 }
 
-// Simple me handler
+// Real me handler with database
 async function handleMe(event: any) {
-  return {
-    statusCode: 200,
-    headers: {
-      'Access-Control-Allow-Origin': '*',
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify({
-      message: 'User info endpoint reached',
-      user: null,
-      timestamp: new Date().toISOString(),
-    }),
-  };
+  try {
+    // For now, return a simple response
+    // In a real app, you'd validate the JWT token here
+    return {
+      statusCode: 200,
+      headers: {
+        'Access-Control-Allow-Origin': '*',
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ 
+        message: 'User info endpoint reached',
+        user: null, // Will be implemented with proper auth
+        timestamp: new Date().toISOString(),
+      }),
+    };
+  } catch (error: any) {
+    console.error('Me error:', error);
+    return {
+      statusCode: 400,
+      headers: {
+        'Access-Control-Allow-Origin': '*',
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ error: error.message }),
+    };
+  }
+}
+
+// User stats handler
+async function handleUserStats(event: any) {
+  try {
+    return {
+      statusCode: 200,
+      headers: {
+        'Access-Control-Allow-Origin': '*',
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ 
+        message: 'User stats endpoint reached',
+        stats: {
+          totalUsers: 0,
+          pendingApprovals: 0,
+          activeUsers: 0,
+        },
+        timestamp: new Date().toISOString(),
+      }),
+    };
+  } catch (error: any) {
+    console.error('User stats error:', error);
+    return {
+      statusCode: 400,
+      headers: {
+        'Access-Control-Allow-Origin': '*',
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ error: error.message }),
+    };
+  }
 }

@@ -17,11 +17,26 @@
 [functions]
   directory = "netlify/functions"
 
-# إعادة التوجيه للـ API أولاً
+# إعادة التوجيه للـ API أولاً (أولوية عالية)
 [[redirects]]
   from = "/api/*"
   to = "/.netlify/functions/api"
   status = 200
+  force = true
+
+# إعادة التوجيه محددة للـ auth endpoints
+[[redirects]]
+  from = "/api/auth/*"
+  to = "/.netlify/functions/api"
+  status = 200
+  force = true
+
+# إعادة التوجيه محددة للـ user endpoints
+[[redirects]]
+  from = "/api/user/*"
+  to = "/.netlify/functions/api"
+  status = 200
+  force = true
 
 # إعادة التوجيه للـ SPA
 [[redirects]]

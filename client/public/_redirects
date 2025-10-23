@@ -1,5 +1,5 @@
-# إعادة التوجيه لـ Single Page Application
-/*    /index.html   200
+# API redirects (must be first)
+/api/* /.netlify/functions/api 200
 
-# إعادة التوجيه للـ API (إذا كنت تستخدم Netlify Functions)
-/api/*  /.netlify/functions/api/:splat  200
+# SPA fallback
+/* /index.html 200
