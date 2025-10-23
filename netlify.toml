@@ -9,6 +9,9 @@
   # إعدادات Node.js
   NODE_VERSION = "18"
   NPM_VERSION = "9"
+  
+  # متغيرات قاعدة البيانات
+  DATABASE_URL = "postgresql://neondb_owner:npg_RjPm5AzCSe3X@ep-blue-bread-af97x8n0-pooler.c-2.us-west-2.aws.neon.tech/neondb?sslmode=require&channel_binding=require"
 
 # إعدادات Netlify Functions
 [functions]
