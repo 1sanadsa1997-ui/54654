@@ -1,7 +1,30 @@
 import { Handler } from '@netlify/functions';
 import bcrypt from 'bcrypt';
 import { z } from 'zod';
-import prisma from './prisma';
+
+// Simple in-memory database for demo purposes
+// In production, you would use a real database
+const users: any[] = [];
+let nextId = 1;
+
+// Add a test user for demo purposes
+(async () => {
+  const testUser = {
+    id: nextId++,
+    username: 'testuser',
+    email: 'test@example.com',
+    password: await bcrypt.hash('password123', 10),
+    fullName: 'Test User',
+    role: 'USER',
+    level: 0,
+    isApproved: true,
+    isSuspended: false,
+    balance: 100,
+    createdAt: new Date(),
+    updatedAt: new Date(),
+  };
+  users.push(testUser);
+})();
 
 export const handler: Handler = async (event, context) => {
   // Handle CORS preflight
@@ -65,7 +88,7 @@ export const handler: Handler = async (event, context) => {
   }
 };
 
-// Real login handler with database
+// Simple login handler with in-memory database
 async function handleLogin(event: any) {
   try {
     const body = JSON.parse(event.body || '{}');
@@ -77,10 +100,8 @@ async function handleLogin(event: any) {
 
     const { email, password } = schema.parse(body);
 
-    const user = await prisma.user.findUnique({ 
-      where: { email },
-      include: { wallet: true },
-    });
+    // Find user in memory
+    const user = users.find(u => u.email === email);
 
     if (!user || !(await bcrypt.compare(password, user.password))) {
       return {
@@ -116,10 +137,7 @@ async function handleLogin(event: any) {
     }
 
     // Update last login
-    await prisma.user.update({
-      where: { id: user.id },
-      data: { lastLoginAt: new Date() },
-    });
+    user.lastLoginAt = new Date();
 
     return {
       statusCode: 200,
@@ -136,7 +154,7 @@ async function handleLogin(event: any) {
           fullName: user.fullName,
           role: user.role,
           level: user.level,
-          balance: user.wallet?.balance || 0,
+          balance: user.balance || 0,
         },
       }),
     };
@@ -153,7 +171,7 @@ async function handleLogin(event: any) {
   }
 }
 
-// Real register handler with database
+// Simple register handler with in-memory database
 async function handleRegister(event: any) {
   try {
     const body = JSON.parse(event.body || '{}');
@@ -169,14 +187,9 @@ async function handleRegister(event: any) {
     const data = schema.parse(body);
 
     // Check if user exists
-    const existing = await prisma.user.findFirst({
-      where: {
-        OR: [
-          { email: data.email },
-          { username: data.username },
-        ],
-      },
-    });
+    const existing = users.find(u => 
+      u.email === data.email || u.username === data.username
+    );
 
     if (existing) {
       return {
@@ -191,15 +204,22 @@ async function handleRegister(event: any) {
 
     const hashedPassword = await bcrypt.hash(data.password, 10);
 
-    const user = await prisma.user.create({
-      data: {
-        username: data.username,
-        email: data.email,
-        password: hashedPassword,
-        fullName: data.fullName,
-        wallet: { create: {} },
-      },
-    });
+    const user = {
+      id: nextId++,
+      username: data.username,
+      email: data.email,
+      password: hashedPassword,
+      fullName: data.fullName,
+      role: 'USER',
+      level: 0,
+      isApproved: false,
+      isSuspended: false,
+      balance: 0,
+      createdAt: new Date(),
+      updatedAt: new Date(),
+    };
+
+    users.push(user);
 
     return {
       statusCode: 201,
@@ -274,9 +294,13 @@ async function handleMe(event: any) {
   }
 }
 
-// User stats handler
+// User stats handler with in-memory database
 async function handleUserStats(event: any) {
   try {
+    const totalUsers = users.length;
+    const pendingApprovals = users.filter(u => !u.isApproved).length;
+    const activeUsers = users.filter(u => u.isApproved && !u.isSuspended).length;
+
     return {
       statusCode: 200,
       headers: {
@@ -286,9 +310,9 @@ async function handleUserStats(event: any) {
       body: JSON.stringify({ 
         message: 'User stats endpoint reached',
         stats: {
-          totalUsers: 0,
-          pendingApprovals: 0,
-          activeUsers: 0,
+          totalUsers,
+          pendingApprovals,
+          activeUsers,
         },
         timestamp: new Date().toISOString(),
       }),
