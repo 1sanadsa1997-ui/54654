@@ -13,29 +13,17 @@
 # إعدادات Netlify Functions
 [functions]
   directory = "netlify/functions"
-  node_bundler = "esbuild"
-  external_node_modules = ["@prisma/client", "bcrypt"]
+
+# إعادة التوجيه للـ API أولاً
+[[redirects]]
+  from = "/api/*"
+  to = "/.netlify/functions/api"
+  status = 200
 
 # إعادة التوجيه للـ SPA
 [[redirects]]
   from = "/*"
   to = "/index.html"
-  status = 200
-
-# إعادة التوجيه للـ API Functions
-[[redirects]]
-  from = "/api/auth/register"
-  to = "/.netlify/functions/auth"
-  status = 200
-
-[[redirects]]
-  from = "/api/auth/login"
-  to = "/.netlify/functions/auth"
-  status = 200
-
-[[redirects]]
-  from = "/api/auth/me"
-  to = "/.netlify/functions/auth"
   status = 200
 
 # إعدادات الـ Headers للأمان
