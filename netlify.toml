@@ -14,6 +14,7 @@
 [functions]
   directory = "netlify/functions"
   node_bundler = "esbuild"
+  external_node_modules = ["@prisma/client", "bcrypt"]
 
 # إعادة التوجيه للـ SPA
 [[redirects]]
@@ -23,8 +24,18 @@
 
 # إعادة التوجيه للـ API Functions
 [[redirects]]
-  from = "/api/auth/*"
-  to = "/.netlify/functions/auth/:splat"
+  from = "/api/auth/register"
+  to = "/.netlify/functions/auth"
+  status = 200
+
+[[redirects]]
+  from = "/api/auth/login"
+  to = "/.netlify/functions/auth"
+  status = 200
+
+[[redirects]]
+  from = "/api/auth/me"
+  to = "/.netlify/functions/auth"
   status = 200
 
 # إعدادات الـ Headers للأمان

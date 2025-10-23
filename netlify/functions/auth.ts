@@ -14,8 +14,8 @@ const corsHeaders = {
   'Access-Control-Allow-Credentials': 'true',
 };
 
-// Register endpoint
-export const register: Handler = async (event, context) => {
+// Main auth handler
+export const handler: Handler = async (event, context) => {
   // Handle CORS preflight
   if (event.httpMethod === 'OPTIONS') {
     return {
@@ -25,6 +25,41 @@ export const register: Handler = async (event, context) => {
     };
   }
 
+  const path = event.path.replace('/api/auth', '');
+  
+  console.log('Auth function called:', {
+    method: event.httpMethod,
+    path: path,
+    body: event.body
+  });
+
+  try {
+    switch (path) {
+      case '/register':
+        return await handleRegister(event);
+      case '/login':
+        return await handleLogin(event);
+      case '/me':
+        return await handleMe(event);
+      default:
+        return {
+          statusCode: 404,
+          headers: corsHeaders,
+          body: JSON.stringify({ error: 'Endpoint not found' }),
+        };
+    }
+  } catch (error: any) {
+    console.error('Auth function error:', error);
+    return {
+      statusCode: 500,
+      headers: corsHeaders,
+      body: JSON.stringify({ error: 'Internal server error' }),
+    };
+  }
+};
+
+// Register handler
+async function handleRegister(event: any) {
   if (event.httpMethod !== 'POST') {
     return {
       statusCode: 405,
@@ -108,19 +143,10 @@ export const register: Handler = async (event, context) => {
       body: JSON.stringify({ error: error.message }),
     };
   }
-};
+}
 
-// Login endpoint
-export const login: Handler = async (event, context) => {
-  // Handle CORS preflight
-  if (event.httpMethod === 'OPTIONS') {
-    return {
-      statusCode: 200,
-      headers: corsHeaders,
-      body: '',
-    };
-  }
-
+// Login handler
+async function handleLogin(event: any) {
   if (event.httpMethod !== 'POST') {
     return {
       statusCode: 405,
@@ -198,4 +224,35 @@ export const login: Handler = async (event, context) => {
       body: JSON.stringify({ error: error.message }),
     };
   }
-};
+}
+
+// Me handler (get current user)
+async function handleMe(event: any) {
+  if (event.httpMethod !== 'GET') {
+    return {
+      statusCode: 405,
+      headers: corsHeaders,
+      body: JSON.stringify({ error: 'Method not allowed' }),
+    };
+  }
+
+  try {
+    // For now, return a simple response
+    // In a real app, you'd validate the JWT token here
+    return {
+      statusCode: 200,
+      headers: corsHeaders,
+      body: JSON.stringify({ 
+        message: 'User info endpoint',
+        user: null // Will be implemented with proper auth
+      }),
+    };
+  } catch (error: any) {
+    console.error('Me error:', error);
+    return {
+      statusCode: 400,
+      headers: corsHeaders,
+      body: JSON.stringify({ error: error.message }),
+    };
+  }
+}
