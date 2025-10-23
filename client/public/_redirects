@@ -1,0 +1,5 @@
+# إعادة التوجيه لـ Single Page Application
+/*    /index.html   200
+
+# إعادة التوجيه للـ API (إذا كنت تستخدم Netlify Functions)
+/api/*  /.netlify/functions/api/:splat  200
