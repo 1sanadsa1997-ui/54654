@@ -10,10 +10,21 @@
   NODE_VERSION = "18"
   NPM_VERSION = "9"
 
+# إعدادات Netlify Functions
+[functions]
+  directory = "netlify/functions"
+  node_bundler = "esbuild"
+
 # إعادة التوجيه للـ SPA
 [[redirects]]
   from = "/*"
   to = "/index.html"
+  status = 200
+
+# إعادة التوجيه للـ API Functions
+[[redirects]]
+  from = "/api/auth/*"
+  to = "/.netlify/functions/auth/:splat"
   status = 200
 
 # إعدادات الـ Headers للأمان

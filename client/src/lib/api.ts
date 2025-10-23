@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 const api = axios.create({
-  baseURL: '/api',
+  baseURL: '/api', // سيتم توجيهه إلى Netlify Functions
   withCredentials: true,
   headers: {
     'Content-Type': 'application/json',
